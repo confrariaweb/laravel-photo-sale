@@ -15,12 +15,7 @@
             </div>
         </div>
         <hr>
-        <div class="row" id="plans-row">
-            <div class="col-12">
-                <h4>Escolha seu plano</h4>
-            </div>
-            @include('photoSale::forms.plans')
-        </div>
+        @include('photoSale::forms.plans')
         <hr>
         <div class="row" id="address-row">
             <div class="col-12">
@@ -33,27 +28,50 @@
             </div>
         </div>
         <hr>
-        <div class="row" id="creditcard-row">
+        <div class="row" id="">
             <div class="col-12">
-                <div class="row">
-                    <div class="col-12">
-                        <h4>Dados do cartão</h4>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="col-12 form-group">
-                        <label for="creditcard">Cartão</label>
-                        <select class="form-control" name="creditcard" id="creditcard">
-                            <option value="">Novo Cartão</option>
-                            @foreach($creditcards as $cc_k => $cc_v)
-                                <option value="{{ $cc_v->id }}">{{ $cc_v->title }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                @include('photoSale::forms.card')
+                <h4>Forma de pagamento</h4>
             </div>
         </div>
+        <div class="row" id="payment-method-row">
+            <div class="d-block col-4">
+                <div class="custom-control custom-radio">
+                    <input id="credit" name="payment-method" type="radio" class="custom-control-input" checked=""
+                           required="">
+                    <label class="custom-control-label" for="credit">Cartão de crédito</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="debit" name="payment-method" type="radio" class="custom-control-input" required="">
+                    <label class="custom-control-label" for="debit">Cartão de débito</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input id="paypal" name="payment-method" type="radio" class="custom-control-input" required="">
+                    <label class="custom-control-label" for="paypal">Boleto</label>
+                </div>
+            </div>
+            <div class="d-block col-8">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="same-address">
+                    <label class="custom-control-label" for="same-address">Desejo que este plano seja recorrente</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="save-info">
+                    <label class="custom-control-label" for="save-info">Salvar estas informações de pagamento para futuras compras</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-12 form-group">
+                <label for="creditcard">Cartão</label>
+                <select class="form-control" name="creditcard" id="creditcard">
+                    <option value="">Novo Cartão</option>
+                    @foreach($creditcards as $cc_k => $cc_v)
+                        <option value="{{ $cc_v->id }}">{{ $cc_v->title }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        @include('photoSale::forms.card')
         <hr>
         <div class="row" id="submit-row">
             <div class="col-12">

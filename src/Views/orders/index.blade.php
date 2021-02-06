@@ -19,7 +19,6 @@
                 <tr>
                     <th>Plano</th>
                     <th>Status</th>
-                    <th>Código</th>
                     <th>Preço</th>
                     <th>Recorrencia</th>
                     <th>Data</th>
@@ -31,19 +30,19 @@
                     <tr>
                         <td>{{ $order->plan->name }}</td>
                         <td>{{ $order->status->name }}</td>
-                        <td>{{ $order->code }}</td>
+
                         <td><small>R$</small>{{ number_format($order->price, 2, ',', '.') }}</td>
                         <td>{{ $order->recurrent? 'Recorrente' : 'Unico' }}</td>
                         <td>{{ $order->created_at->format('d/m/Y') }}</td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                <a href="#" class="btn btn-secondary">
+                                <a href="{{ route('orders.show', ['order' => $order->id]) }}" class="btn btn-sm btn-secondary">
                                     <span class="material-icons">pageview</span>
                                 </a>
-                                <a href="{{ route('orders.edit', ['order' => $order->id]) }}" class="btn btn-success">
+                                <a href="{{ route('orders.edit', ['order' => $order->id]) }}" class="btn btn-sm btn-success">
                                     <span class="material-icons">edit</span>
                                 </a>
-                                <a href="#" class="btn btn-danger">
+                                <a href="#" class="btn btn-sm btn-danger">
                                     <span class="material-icons">cancel</span>
                                 </a>
                             </div>
@@ -55,7 +54,7 @@
                 <tr>
                     <th>Plano</th>
                     <th>Status</th>
-                    <th>Código</th>
+
                     <th>Preço</th>
                     <th>Recorrencia</th>
                     <th>Data</th>

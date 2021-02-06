@@ -14,6 +14,7 @@ use ConfrariaWeb\PhotoSale\Controllers\CheckoutController;
 use ConfrariaWeb\PhotoSale\Controllers\SocialiteController;
 use ConfrariaWeb\PhotoSale\Controllers\PhotoController;
 use ConfrariaWeb\PhotoSale\Controllers\UserController;
+use ConfrariaWeb\PhotoSale\Controllers\OrderController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -22,10 +23,10 @@ Route::middleware(['web', 'auth'])
     ->group(function () {
         Route::get('/', [PhotoController::class, 'index'])->name('photos.index');
         Route::get('dashboard', [PhotoController::class, 'index'])->name('dashboard');
-
-        Route::get('/photos/{driver}/json', [PhotoController::class, 'photoDriverJson'])->name('photo.driver.json');
-        Route::post('/photos/save/ajax', [PhotoController::class, 'photoSaveAjax'])->name('photo.save.ajax');
-        Route::post('/photos/preferred/ajax', [PhotoController::class, 'photoPreferred'])->name('photo.preferred.ajax');
+        Route::get('photos/like', [PhotoController::class, 'index'])->name('photos.like');
+        Route::get('photos/dislike', [PhotoController::class, 'dislikeIndex'])->name('photos.dislike');
+        Route::post('photos/{photo}/dislike', [PhotoController::class, 'dislikeUpdate'])->name('photos.dislike.update');
+        Route::post('photos/{driver}/update', [PhotoController::class, 'socialitePhotosUpdate'])->name('photos.socialite.update');
 
         Route::resource('users', 'UserController');
         Route::get('profile', [UserController::class, 'profile'])->name('users.profile');
@@ -37,8 +38,14 @@ Route::middleware(['web', 'auth'])
         Route::post('checkout/store/ajax', [CheckoutController::class, 'storeAjax'])->name('checkout.store.ajax');
 
         Route::resource('orders', 'OrderController');
+        Route::post('orders/{order}/process-payment', [OrderController::class, 'processPayment'])->name('orders.process.payment');
 
         Route::resource('creditcards', 'CreditCardController');
+
+        Route::get('/photos/{driver}/json', [PhotoController::class, 'photoDriverJson'])->name('photo.driver.json');
+        Route::post('/photos/save/ajax', [PhotoController::class, 'photoSaveAjax'])->name('photo.save.ajax');
+        Route::post('/photos/preferred/ajax', [PhotoController::class, 'photoPreferred'])->name('photo.preferred.ajax');
+
     });
 
 Route::middleware(['web'])

@@ -7,10 +7,11 @@ use ConfrariaWeb\PhotoSale\Components\Components\TemplateLayout;
 use ConfrariaWeb\PhotoSale\Services\CheckoutService;
 use ConfrariaWeb\PhotoSale\Services\CreditCardService;
 use ConfrariaWeb\PhotoSale\Services\OrderService;
-use ConfrariaWeb\PhotoSale\Services\PhotoSaleService;
+use ConfrariaWeb\PhotoSale\Services\PhotoService;
 use ConfrariaWeb\PhotoSale\Traits\ProviderTrait;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Carbon\Carbon;
 
 class PhotoSaleServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,8 @@ class PhotoSaleServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Carbon::setLocale($this->app->getLocale());
+
         $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
         $this->loadMigrationsFrom(__DIR__ . '/../../databases/Migrations');
         $this->loadViewsFrom(__DIR__ . '/../Views', 'photoSale');
@@ -53,8 +56,8 @@ class PhotoSaleServiceProvider extends ServiceProvider
             return new OrderService();
         });
 
-        $this->app->bind('PhotoSaleService', function ($app) {
-            return new PhotoSaleService();
+        $this->app->bind('PhotoService', function ($app) {
+            return new PhotoService();
         });
     }
 

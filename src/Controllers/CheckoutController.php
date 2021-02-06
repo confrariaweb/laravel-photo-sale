@@ -26,7 +26,7 @@ class CheckoutController extends Controller
         $formItems = $request->all();
         $checkout = resolve('CheckoutService')->store($formItems);
         $orderId = $checkout['order']->id;
-        return redirect()->route('orders.edit', ['order' => $orderId]);
+        return redirect()->route('orders.show', ['order' => $orderId]);
     }
 
     public function storeAjax(StoreCheckoutRequest $request)

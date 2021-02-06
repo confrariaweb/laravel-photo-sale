@@ -11,8 +11,8 @@ class Socialite extends Model
 
     protected $fillable = [
         'token',
-        'provider',
-        'provider_id',
+        'driver',
+        'driver_id',
         'user_id',
     ];
 }

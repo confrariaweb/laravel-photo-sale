@@ -15,23 +15,14 @@ class CreatePhotosTable extends Migration
     {
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('socialite_id');
-            $table->unsignedBigInteger('user_id');
-            $table->text('url');
+            $table->foreignId('socialite_id')->constrained('socialites')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->text('source');
             $table->string('name');
-            $table->string('id_photo');
-            $table->boolean('preferred')->default(false);
+            $table->string('idphoto');
+            $table->boolean('dislike')->default(false);
             $table->timestamps();
-            $table->foreign('socialite_id')
-                ->references('id')
-                ->onUpdate('cascade')
-                ->onDelete('cascade')
-                ->on('socialites');
-            $table->foreign('user_id')
-                ->references('id')
-                ->onUpdate('cascade')
-                ->onDelete('cascade')
-                ->on('users');
+            $table->unique(['idphoto', 'socialite_id']);
         });
     }
 

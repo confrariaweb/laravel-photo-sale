@@ -16,8 +16,8 @@ class CreateSocialitesTable extends Migration
         Schema::create('socialites', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->text('provider');
-            $table->text('provider_id');
+            $table->text('driver');
+            $table->text('driver_id');
             $table->text('token');
             $table->timestamps();
         });

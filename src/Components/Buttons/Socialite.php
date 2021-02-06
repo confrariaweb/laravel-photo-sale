@@ -32,7 +32,7 @@ class Socialite extends Component
     public function socialitesButtons()
     {
         $data = [];
-        $socialitesLists = ['Computador', 'Facebook', 'Instagram'];
+        $socialitesLists = ['Upload', 'Facebook', 'Instagram'];
         foreach ($socialitesLists as $socList) {
             $driver = Str::slug($socList);
             $data[$driver] = [
@@ -46,11 +46,9 @@ class Socialite extends Component
         $socialitesDrivers = Auth::user()->socialites()->get();
         if ($socialitesDrivers->isNotEmpty()) {
             foreach ($socialitesDrivers as $socListDriver) {
-                $driver = Str::slug($socListDriver->provider);
+                $driver = Str::slug($socListDriver->driver);
                 $data[$driver]['id'] = $socListDriver->id;
-                $data[$driver]['url'] = route('photo.driver.json', ['driver' => $driver]);
-                $data[$driver]['data-toggle'] = "modal";
-                $data[$driver]['data-target'] = "#photosModal";
+                $data[$driver]['url'] = route('photos.socialite.update', ['driver' => $driver]);
             }
         }
         return $data;

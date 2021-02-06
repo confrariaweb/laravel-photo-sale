@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"s>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="{{ asset('vendor/laravel-photo-sale/fonts/fontawesome/css/all.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/laravel-photo-sale/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/laravel-photo-sale/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/laravel-photo-sale/css/template.css') }}" rel="stylesheet">

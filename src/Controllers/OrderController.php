@@ -14,9 +14,29 @@ class OrderController extends Controller
         return view('photoSale::orders.index', $data);
     }
 
-    public function edit($id){
+    public function show($id)
+    {
+        $data['order'] = resolve('OrderService')->find($id);
+        return view('photoSale::orders.show', $data);
+    }
+
+    public function edit($id)
+    {
         $data['order'] = resolve('OrderService')->find($id);
         return view('photoSale::orders.edit', $data);
+    }
+
+    public function processPayment($id)
+    {
+        /*$order = resolve('OrderService')->find($id);
+        $data = [];
+        $payment = resolve('OrderService')
+            ->setUser($order->user)
+            ->setOrder($order)
+            ->setData($data)
+            ->payment();
+        dd($order);*/
+        return redirect()->route('orders.show', ['order' => $id]);
     }
 
 }

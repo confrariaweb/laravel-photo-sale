@@ -21,7 +21,7 @@ class UserController extends Controller
     {
         $data['user'] = User::find($id);
         $data['creditcards'] = CreditCard::all();
-        $data['listCreditCardFlags'] = resolve('CreditCardService')->listCreditCardFlags();
+        //$data['listCreditCardFlags'] = resolve('CreditCardService')->listCreditCardBrands();
         return view('photoSale::user', $data);
     }
 
@@ -49,7 +49,7 @@ class UserController extends Controller
         $data['user'] = Auth::user();
         $data['plans'] = Plan::all();
         $data['creditcards'] = CreditCard::all();
-        $data['listCreditCardFlags'] = resolve('CreditCardService')->listCreditCardFlags();
+        $data['listCreditCardFlags'] = resolve('CreditCardService')->listCreditCardBrands();
         return view('photoSale::checkout', $data);
 
     }
@@ -67,7 +67,7 @@ class UserController extends Controller
         $id = Auth::id();
         $data['user'] = User::find($id);
         $data['creditcards'] = CreditCard::all();
-        $data['listCreditCardFlags'] = resolve('CreditCardService')->listCreditCardFlags();
+        $data['listCreditCardFlags'] = resolve('CreditCardService')->listCreditCardBrands();
         return view('photoSale::payment-information', $data);
     }
 

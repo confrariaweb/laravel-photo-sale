@@ -20,7 +20,7 @@ trait UserTrait
         return $this->hasMany(Photo::class);
     }
 
-    public function creditCard()
+    public function creditCards()
     {
         return $this->hasMany(CreditCard::class);
     }

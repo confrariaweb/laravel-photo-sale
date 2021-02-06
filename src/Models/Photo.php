@@ -10,10 +10,16 @@ class Photo extends Model
     use HasFactory;
 
     protected $fillable = [
-        'url',
+        'source',
         'socialite_id',
         'user_id',
-        'id_photo',
-        'name'
+        'idphoto',
+        'name',
+        'dislike'
     ];
+
+    public function socialite()
+    {
+        return $this->belongsTo(Socialite::class);
+    }
 }

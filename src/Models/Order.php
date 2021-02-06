@@ -22,6 +22,11 @@ class Order extends Model
         'recurrent'
     ];
 
+    public function photos()
+    {
+        return $this->belongsToMany(Photo::class);
+    }
+
     public function payments()
     {
         return $this->hasMany(OrderPayment::class);
@@ -35,6 +40,11 @@ class Order extends Model
     public function status()
     {
         return $this->belongsTo(OrderStatus::class);
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 
     public function user()

@@ -14,6 +14,8 @@ class OrderPayment extends Model
         'order_id',
         'type',
         'paid',
+        'return_code',
+        'return_message',
         'return'
     ];
 

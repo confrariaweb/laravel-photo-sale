@@ -20,6 +20,7 @@
     "doctrine/dbal": "^3.0",
     "guzzlehttp/guzzle": "^7.2",
     "intervention/image": "^2.5",
+    "intervention/imagecache": "^2.5",
     "laravel/socialite": "^5.1",
     "socialiteproviders/facebook": "^4.1",
     "socialiteproviders/instagram": "^4.1"

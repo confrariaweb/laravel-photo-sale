@@ -16,6 +16,8 @@ class CreateOrdersTable extends Migration
         Schema::create('order_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->smallInteger('order')->default(1);
+            $table->text('description')->nullable();
             $table->timestamps();
         });
 
@@ -43,6 +45,8 @@ class CreateOrdersTable extends Migration
             $table->foreignId('order_id')->constrained('orders')->onUpdate('cascade')->onDelete('cascade');
             $table->string('type');
             $table->boolean('paid')->default(false);
+            $table->string('return_code')->nullable();
+            $table->string('return_message')->nullable();
             $table->json('return')->nullable();
             $table->timestamps();
             $table->softDeletes();

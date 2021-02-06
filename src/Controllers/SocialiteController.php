@@ -28,9 +28,9 @@ class SocialiteController extends Controller
             'avatar' => $userSocialite->avatar,
         ];
         $user = User::firstOrCreate(['email' => $credentials['email']], $credentials);
-        $socialite = $user->socialites()->where(['provider' => $driver, 'provider_id' => $userSocialite->id])->first();
-        if(!$socialite) {
-            $user->socialites()->create(['token' => $userSocialite->token, 'provider' => $driver, 'provider_id' => $userSocialite->id]);
+        $socialite = $user->socialites()->where(['driver' => $driver, 'driver_id' => $userSocialite->id])->first();
+        if (!$socialite) {
+            $user->socialites()->create(['token' => $userSocialite->token, 'driver' => $driver, 'driver_id' => $userSocialite->id]);
         }
         Auth::login($user);
         if (Auth::check()) {

@@ -166,6 +166,8 @@ class OrderService
         $paymentCielo = $this->paymentCielo($order, $data);
         $paymentData['type'] = $paymentCielo['type'];
         $paymentData['paid'] = !$paymentCielo['error'] && in_array($paymentCielo['returnCode'], [4, 6]);
+        $paymentData['return_code'] = $paymentCielo['returnCode'] ?? NULL;
+        $paymentData['return_message'] = $paymentCielo['returnMessage'] ?? NULL;
         $paymentData['return'] = $paymentCielo['return'] ?? NULL;
         $orderPayment = $order->payments()->create($paymentData);
         return [

@@ -16,42 +16,17 @@ class PhotoSaleSeeder extends Seeder
     public function run()
     {
 
-        OrderStatus::firstOrCreate(
-            ['name' => 'Aguardando pagamento']
-        );
+        $orderStatuses = config('cw_photo_sale.order.statuses');
+        foreach($orderStatuses as $status) {
+            OrderStatus::firstOrCreate($status);
+        }
 
-        Plan::firstOrCreate([
-            'name' => 'Plano 001',
-            'price' => '14.50',
-            'description' => 'Voce uma unica vez 12 fotos polaroid na sua casa.',
-            'photo_amount' => '12',
-            'photo_type' => 'Polaroid',
-            'recurrent' => false
-        ]);
-        Plan::firstOrCreate([
-            'name' => 'Plano 002',
-            'price' => '24.50',
-            'description' => 'Voce recebe todos os meses 24 fotos polaroid na sua casa.',
-            'photo_amount' => '24',
-            'photo_type' => 'Polaroid',
-            'recurrent' => true
-        ]);
-        Plan::firstOrCreate([
-            'name' => 'Plano 003',
-            'price' => '34.50',
-            'description' => 'Voce recebe todos os meses 36 fotos polaroid na sua casa.',
-            'photo_amount' => '36',
-            'photo_type' => 'Polaroid',
-            'recurrent' => true
-        ]);
-        Plan::firstOrCreate([
-            'name' => 'Plano 004',
-            'price' => '44.50',
-            'description' => 'Voce recebe todos os meses 48 fotos polaroid na sua casa.',
-            'photo_amount' => '48',
-            'photo_type' => 'Polaroid',
-            'recurrent' => true
-        ]);
+        $plans = config('cw_photo_sale.plans');
+        foreach($plans as $plan) {
+            Plan::firstOrCreate($plan);
+        }
+
+
     }
 
 }

@@ -8,22 +8,41 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class PhotoController extends Controller
 {
+
     public function index()
     {
-
-        $data['photos'] = Auth::user()->photos()->get();
-        return view('photoSale::photos', $data);
+        $data['photos'] = resolve('PhotoService')->likeAll();
+        $data['title'] = 'Minhas fotos';
+        return view('photoSale::photos.index', $data);
     }
+
+    public function dislikeIndex()
+    {
+        $data['photos'] = resolve('PhotoService')->dislikeAll();
+        $data['title'] = 'Não quero';
+        return view('photoSale::photos.index', $data);
+    }
+
+    public function dislikeUpdate($id)
+    {
+        return resolve('PhotoService')->dislikeUpdate($id);
+    }
+
+    public function socialitePhotosUpdate($driver)
+    {
+        $p = resolve('PhotoService')->socialitePhotosUpdate($driver);
+        return back()->withInput()
+            ->with('status', 'Fotos atualizadas com sucesso');
+    }
+
 
     public function photoDriverJson($driver)
     {
-        $socialite = Auth::user()->socialites()->where('provider', $driver)->first();
+        $socialite = Auth::user()->socialites()->where('driver', $driver)->first();
         $token = $socialite->token;
-
         $url = 'https://graph.facebook.com/me/photos?type=uploaded&fields=link,name,images&limit=200';
         $clientGet = Http::withHeaders([
             "Authorization" => "Bearer {$token}"
