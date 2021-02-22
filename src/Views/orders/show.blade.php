@@ -3,14 +3,28 @@
         <div class="col-6">
             <h4>Pedido {{ $order->plan->name }} <small>[{{ $order->status->name }}]</small></h4>
         </div>
-        <div class="col-6 text-right">
+        <div class="col-6 text-right text-end">
             <div class="btn-group btn-group-sm float-right" role="group" aria-label="Basic">
                 <div class="btn-group" role="group" aria-label="">
                     <a href="#" class="btn btn-secondary">Voltar</a>
-                    <a href="{{ route('orders.process.payment', ['order' => $order->id]) }}" class="btn btn-warning"
-                       onclick="event.preventDefault(); document.getElementById('formProcessPayment').submit();">
-                        Processar pagamento</a>
-                    <a href="#" class="btn btn-success">Gerar arquivos</a>
+                    @if(!$order->paid())
+                        <button type="button"
+                                class="btn btn-warning"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalProcessPayment">
+                            Efetuar pagamento
+                        </button>
+                    @elseif(auth()->user()->isAdmin())
+                        <button type="button"
+                                onclick="event.preventDefault(); document.getElementById('formGenerateFiles-{{ $order->id }}').submit();"
+                                class="btn btn-success">Gerar arquivos
+                        </button>
+                        <form id="formGenerateFiles-{{ $order->id }}" method="POST"
+                              action="{{ route('orders.generate.files', ['order' => $order->id]) }}">
+                            @csrf
+                        </form>
+                    @endif
+
                     <a href="#" class="btn btn-danger">Cancelar</a>
                 </div>
             </div>
@@ -42,13 +56,11 @@
                     Fotos selecionadas
                 </div>
                 <div class="card-body">
-                    <div class="list-group">
                         @forelse ($order->photos as $photo)
-                            <img src="{{ $photo->url }}" class="img-thumbnail" width="100" height="100">
+                            <img src="{{ $photo->source }}" class="img-thumbnail" width="100" height="100">
                         @empty
                             <p>Nenhuma foto selecionada ainda</p>
                         @endforelse
-                    </div>
                 </div>
             </div>
         </div>
@@ -58,7 +70,8 @@
                     Detalhes do pedido
                 </div>
                 <div class="card-body">
-                    Valor: {{ $order->created_at->format('d/m/Y') }}
+                    Valor: {{ number_format($order->price, 2, ',', '.') }}
+                    ({{ $order->paid()? 'Pago' : 'Pagamento pendente' }})
                     <br>
                     Criado: {{ $order->created_at->format('d/m/Y') }}
                     <br>
@@ -87,10 +100,9 @@
                                 <p class="mb-1">
                                     {{ $payment->return_message }}
                                 </p>
-                                <small>And some small print.</small>
                             </a>
                         @empty
-                            <p>No users</p>
+                            <p>No payments</p>
                         @endforelse
                     </div>
                 </div>
@@ -102,17 +114,23 @@
         <div class="col-12">
             <hr>
             <h4 class="">Informações importantes</h4>
-            <p>Mussum Ipsum, cacilds vidis litro abertis. Mé faiz elementum girarzis, nisi eros vermeio. Paisis, filhis, espiritis santis. Leite de capivaris, leite de mula manquis sem cabeça. Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget.</p>
-            <p>Per aumento de cachacis, eu reclamis. Viva Forevis aptent taciti sociosqu ad litora torquent. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis. Todo mundo vê os porris que eu tomo, mas ninguém vê os tombis que eu levo!</p>
-            <p>Interagi no mé, cursus quis, vehicula ac nisi. Quem num gosta di mim que vai caçá sua turmis! Mais vale um bebadis conhecidiss, que um alcoolatra anonimis. Manduma pindureta quium dia nois paga.</p>
-            <p>Atirei o pau no gatis, per gatis num morreus. Diuretics paradis num copo é motivis de denguis. Em pé sem cair, deitado sem dormir, sentado sem cochilar e fazendo pose. Si num tem leite então bota uma pinga aí cumpadi!</p>
-            <p>Nec orci ornare consequat. Praesent lacinia ultrices consectetur. Sed non ipsum felis. Admodum accumsan disputationi eu sit. Vide electram sadipscing et per. Praesent malesuada urna nisi, quis volutpat erat hendrerit non. Nam vulputate dapibus. Casamentiss faiz malandris se pirulitá.</p>
+            <p>Mussum Ipsum, cacilds vidis litro abertis. Mé faiz elementum girarzis, nisi eros vermeio. Paisis, filhis,
+                espiritis santis. Leite de capivaris, leite de mula manquis sem cabeça. Praesent vel viverra nisi.
+                Mauris aliquet nunc non turpis scelerisque, eget.</p>
+            <p>Per aumento de cachacis, eu reclamis. Viva Forevis aptent taciti sociosqu ad litora torquent.
+                Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis. Todo mundo vê os porris que
+                eu tomo, mas ninguém vê os tombis que eu levo!</p>
+            <p>Interagi no mé, cursus quis, vehicula ac nisi. Quem num gosta di mim que vai caçá sua turmis! Mais vale
+                um bebadis conhecidiss, que um alcoolatra anonimis. Manduma pindureta quium dia nois paga.</p>
+            <p>Atirei o pau no gatis, per gatis num morreus. Diuretics paradis num copo é motivis de denguis. Em pé sem
+                cair, deitado sem dormir, sentado sem cochilar e fazendo pose. Si num tem leite então bota uma pinga aí
+                cumpadi!</p>
+            <p>Nec orci ornare consequat. Praesent lacinia ultrices consectetur. Sed non ipsum felis. Admodum accumsan
+                disputationi eu sit. Vide electram sadipscing et per. Praesent malesuada urna nisi, quis volutpat erat
+                hendrerit non. Nam vulputate dapibus. Casamentiss faiz malandris se pirulitá.</p>
         </div>
     </div>
-
-    <form id="formProcessPayment" method="POST" action="{{ route('orders.process.payment', ['order' => $order->id]) }}">
-        @csrf
-    </form>
+    @include('photoSale::modals.process-payment')
 </x-template-layout>
 
 

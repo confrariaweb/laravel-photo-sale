@@ -3,9 +3,11 @@
 namespace ConfrariaWeb\PhotoSale\Models;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Order extends Model
 {
@@ -19,8 +21,21 @@ class Order extends Model
         'plan_id',
         'code',
         'price',
+        'done',
         'recurrent'
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope('user_order', function (Builder $builder) {
+            $builder->where('user_id', Auth::id());
+        });
+    }
 
     public function photos()
     {
@@ -51,4 +66,28 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Scope para buscar somente os pagamentos ja pagos.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+
+    public function scopePaid($query)
+    {
+        return $this->hasMany(OrderPayment::class)
+            ->where(['order_payments.paid' => true]);
+    } */
+
+    public function paid()
+    {
+        return $this->hasMany(OrderPayment::class)
+            ->where(['order_payments.paid' => true])->exists();
+    }
+
+    public function isDone()
+    {
+        return ($this->done === 1);
+    }
+
 }

@@ -15,6 +15,8 @@ use ConfrariaWeb\PhotoSale\Controllers\SocialiteController;
 use ConfrariaWeb\PhotoSale\Controllers\PhotoController;
 use ConfrariaWeb\PhotoSale\Controllers\UserController;
 use ConfrariaWeb\PhotoSale\Controllers\OrderController;
+use ConfrariaWeb\PhotoSale\Filters\PolaroidFilter;
+use ConfrariaWeb\PhotoSale\Models\Photo;
 
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +41,8 @@ Route::middleware(['web', 'auth'])
 
         Route::resource('orders', 'OrderController');
         Route::post('orders/{order}/process-payment', [OrderController::class, 'processPayment'])->name('orders.process.payment');
+        Route::post('orders/{order}/cancel', [OrderController::class, 'cancelOrder'])->name('orders.cancel');
+        Route::post('orders/{order}/generate-files', [OrderController::class, 'generateFiles'])->name('orders.generate.files');
 
         Route::resource('creditcards', 'CreditCardController');
 
@@ -46,6 +50,15 @@ Route::middleware(['web', 'auth'])
         Route::post('/photos/save/ajax', [PhotoController::class, 'photoSaveAjax'])->name('photo.save.ajax');
         Route::post('/photos/preferred/ajax', [PhotoController::class, 'photoPreferred'])->name('photo.preferred.ajax');
 
+        Route::get('privacy-policy', function () {
+            return view('photoSale::pages.privacypolicy');
+        })->name('privacy-policy');
+
+        Route::get('terms-of-use', function () {
+            return view('photoSale::pages.termsofuse');
+        })->name('terms-of-use');
+
+        Route::get('photo/cache/{id}/{type}', [PhotoController::class, 'photoType'])->name('photo.cache.type');
     });
 
 Route::middleware(['web'])

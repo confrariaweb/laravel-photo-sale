@@ -3,12 +3,14 @@
 namespace ConfrariaWeb\PhotoSale\Services;
 
 use ConfrariaWeb\PhotoSale\Models\Order;
+use ConfrariaWeb\PhotoSale\Models\OrderStatus;
 
 class OrderService
 {
 
     private $address;
     private $data;
+    private $id;
     private $order;
     private $payment;
     private $plan;
@@ -35,6 +37,23 @@ class OrderService
     public function setAddress($address)
     {
         $this->address = $address;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
         return $this;
     }
 
@@ -123,6 +142,21 @@ class OrderService
         return $this;
     }
 
+    public function convertInput($orderData = [])
+    {
+        $data = $this->getData();
+        $orderData['paymentType'] = $data['payment-type'] ?? NULL;
+        $orderData['securityCode'] = $data['card-security-code'] ?? NULL;
+        $orderData['brand'] = $data['card-brand'] ?? NULL;
+        $orderData['cardToken'] = $data['card-token'] ?? NULL;
+        $orderData['expirationDate'] = $data['card-expiration-date'] ?? NULL;
+        $orderData['cardNumber '] = $data['card-number'] ?? NULL;
+        $orderData['holder'] = $data['card-holder'] ?? NULL;
+        $orderData['saveCard'] = $data['card-save'] ?? TRUE;
+        $this->setData($orderData);
+        return $this;
+    }
+
     public function find($id)
     {
         return Order::find($id);
@@ -143,7 +177,7 @@ class OrderService
         $orderData['plan_id'] = $plan->id;
         $orderData['address_id'] = $address->id;
         $orderData['status_id'] = 1;
-        $orderData['code'] = uniqid(rand(), true);
+        $orderData['code'] = uniqid(rand());
         $order = $user->orders()->create($orderData);
         if (!$order) {
             return $this->errorReturn('Erro ao tentar gerar o pedido');
@@ -156,6 +190,21 @@ class OrderService
         return $r;
     }
 
+    public function cancel()
+    {
+        $id = $this->getId();
+        $order = $this->find($id);
+        $status = OrderStatus::firstOrCreate(
+            ['slug' => 'canceled'],
+            ['name' => 'Cancelado']
+        );
+        $order->update(['done' => true, 'status_id' => $status->id]);
+        return [
+            'error' => false,
+            'message' => 'O pedido foi cancelado com sucesso'
+        ];
+    }
+
     public function payment()
     {
         $user = $this->getUser();
@@ -164,13 +213,15 @@ class OrderService
         $orderData['customerName'] = $user->name;
         $data['paymentValue'] = str_replace('.', '', $order->price);
         $paymentCielo = $this->paymentCielo($order, $data);
-        $paymentData['type'] = $paymentCielo['type'];
-        $paymentData['paid'] = !$paymentCielo['error'] && in_array($paymentCielo['returnCode'], [4, 6]);
+        $paymentData['type'] = $paymentCielo['type'] ?? NULL;
+        $paymentData['paid'] = !$paymentCielo['error'];
         $paymentData['return_code'] = $paymentCielo['returnCode'] ?? NULL;
         $paymentData['return_message'] = $paymentCielo['returnMessage'] ?? NULL;
         $paymentData['return'] = $paymentCielo['return'] ?? NULL;
         $orderPayment = $order->payments()->create($paymentData);
         return [
+            'error' => $paymentCielo['error'],
+            'message' => $paymentData['return_message'],
             'returnPayment' => $paymentCielo,
             'payment' => $orderPayment
         ];
@@ -198,7 +249,6 @@ class OrderService
             $brand = $creditcard->brand ?? NULL;
             $securityCode = $creditcard->security_code ?? NULL;
         }
-
         return resolve('CieloService')
             ->setOrderCode($orderCode)
             ->setCustomerName($customerName)
@@ -220,5 +270,36 @@ class OrderService
     {
         $error = is_array($error) ? $error : ['error' => true, 'message' => $error];
         return $error;
+    }
+
+    public function selectPhotos()
+    {
+        $id = $this->getId();
+        $order = $this->find($id);
+        $photos_count = $order->photos()->count();
+        $plan_photo_amount = $order->plan->photo_amount;
+        $take = $plan_photo_amount - $photos_count;
+        $photos = resolve('PhotoService')
+            ->take($take)
+            ->inRandomOrder()
+            ->likeAll();
+        if ($photos->count() > 0) {
+            $idsPhotos = $photos->pluck('id');
+            $order->photos()->attach($idsPhotos);
+        }
+        return [
+            'error' => false,
+            'message' => 'Fotos selecionadas com sucesso',
+            'photos' => $photos
+        ];
+    }
+
+    public function generateFiles()
+    {
+        $selectPhotos = $this->selectPhotos();
+        return [
+            'error' => false,
+            'message' => 'Fotos geradas com sucesso'
+        ];
     }
 }

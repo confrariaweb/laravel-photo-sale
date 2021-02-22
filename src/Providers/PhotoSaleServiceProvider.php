@@ -30,6 +30,7 @@ class PhotoSaleServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
         $this->loadMigrationsFrom(__DIR__ . '/../../databases/Migrations');
         $this->loadViewsFrom(__DIR__ . '/../Views', 'photoSale');
+        $this->loadTranslationsFrom(__DIR__.'/../Translations', 'photoSale');
         $this->publishes([__DIR__ . '/../../config/cw_photo_sale.php' => config_path('cw_photo_sale.php')], 'config');
         $this->registerSeedsFrom(__DIR__ . '/../../databases/Seeds');
 

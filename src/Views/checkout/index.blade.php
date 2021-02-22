@@ -34,21 +34,6 @@
             </div>
         </div>
         <div class="row" id="payment-method-row">
-            <div class="d-block col-4">
-                <div class="custom-control custom-radio">
-                    <input id="credit" name="payment-method" type="radio" class="custom-control-input" checked=""
-                           required="">
-                    <label class="custom-control-label" for="credit">Cartão de crédito</label>
-                </div>
-                <div class="custom-control custom-radio">
-                    <input id="debit" name="payment-method" type="radio" class="custom-control-input" required="">
-                    <label class="custom-control-label" for="debit">Cartão de débito</label>
-                </div>
-                <div class="custom-control custom-radio">
-                    <input id="paypal" name="payment-method" type="radio" class="custom-control-input" required="">
-                    <label class="custom-control-label" for="paypal">Boleto</label>
-                </div>
-            </div>
             <div class="d-block col-8">
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="same-address">
@@ -60,18 +45,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-row">
-            <div class="col-12 form-group">
-                <label for="creditcard">Cartão</label>
-                <select class="form-control" name="creditcard" id="creditcard">
-                    <option value="">Novo Cartão</option>
-                    @foreach($creditcards as $cc_k => $cc_v)
-                        <option value="{{ $cc_v->id }}">{{ $cc_v->title }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        @include('photoSale::forms.card')
+        @include('photoSale::forms.payments-types')
         <hr>
         <div class="row" id="submit-row">
             <div class="col-12">

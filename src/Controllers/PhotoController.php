@@ -2,12 +2,14 @@
 
 namespace ConfrariaWeb\PhotoSale\Controllers;
 
+use ConfrariaWeb\PhotoSale\Filters\PhotoFilter;
 use ConfrariaWeb\PhotoSale\Models\Photo;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class PhotoController extends Controller
 {
@@ -38,6 +40,13 @@ class PhotoController extends Controller
             ->with('status', 'Fotos atualizadas com sucesso');
     }
 
+    public function photoType($id, $type){
+        $img = Image::cache(function ($image) use ($id, $type) {
+            $photo = Photo::find($id);
+            $image->make($photo->source)->filter(new PhotoFilter());
+        }, 30, true);
+        return $img->response();
+    }
 
     public function photoDriverJson($driver)
     {

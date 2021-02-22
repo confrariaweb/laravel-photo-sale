@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Http;
 class PhotoService
 {
 
+    private $photos;
+
     public function __construct()
     {
-
+        $this->photos = Auth::user()->photos();
     }
 
     public function all()
@@ -20,9 +22,21 @@ class PhotoService
         return $photos;
     }
 
+    public function take($take = 10)
+    {
+        $this->photos = $this->photos->take($take);
+        return $this;
+    }
+
+    public function inRandomOrder()
+    {
+        $this->photos = $this->photos->inRandomOrder();
+        return $this;
+    }
+
     public function likeAll()
     {
-        $photos = Auth::user()->photos()->where('dislike', false)->get();
+        $photos = $this->photos->where('dislike', false)->get();
         return $photos;
     }
 
@@ -68,6 +82,10 @@ class PhotoService
         }
         $token = $socialite->token;
         $url = 'https://graph.facebook.com/me/photos?type=uploaded&fields=link,name,images&limit=200';
+
+        //$res = Http::get($url . '&redirect=false&access_token=' . $token);
+        //dd($res->json());
+
         $clientGet = Http::withHeaders([
             "Authorization" => "Bearer {$token}"
         ])->get($url);

@@ -7,8 +7,16 @@ use Intervention\Image\Filters\FilterInterface;
 
 class PolaroidFilter implements FilterInterface
 {
-    public function applyFilter(Image $image)
+    public function applyFilter(Image $img)
     {
-        return $image->fit(750, 1010)->greyscale();
+        $width = $img->width();
+        $height = $img->height();
+        $rotate = ($width <= $height)? 0 : -90;
+        return $img
+            ->rotate($rotate)
+            ->fit(300, 400, function ($constraint) {
+                $constraint->upsize();
+            })
+            ->resizeCanvas(320, 420, 'center', false, 'ffffff');
     }
 }

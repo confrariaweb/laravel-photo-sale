@@ -16,6 +16,7 @@ class CreateOrdersTable extends Migration
         Schema::create('order_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug');
             $table->smallInteger('order')->default(1);
             $table->text('description')->nullable();
             $table->timestamps();
@@ -31,6 +32,7 @@ class CreateOrdersTable extends Migration
             $table->string('code');
             $table->decimal('price', 8, 2);
             $table->boolean('recurrent')->default(false);
+            $table->boolean('done')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

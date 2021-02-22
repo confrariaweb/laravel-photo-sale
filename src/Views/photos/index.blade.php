@@ -4,7 +4,7 @@
             <h4>{{ $title }} <small class="text-muted">({{ $photos->count() }})</small></h4>
         </div>
         <div class="col-8 text-right">
-            <div class="btn-group float-right" role="group" aria-label="Facebook">
+            <div class="btn-group float-end" role="group" aria-label="Facebook">
                 <button type="button"
                         title="Upload"
                         class="btn btn-primary buttonPhotos">
@@ -22,7 +22,7 @@
                     <i class="fab fa-instagram"></i>
                 </button>
             </div>
-            <div class="btn-group float-right mr-3" role="group" aria-label="Basic example">
+            <div class="btn-group float-end me-3" role="group" aria-label="Basic example">
                 <a href="{{ route('photos.like') }}" class="btn btn-primary">
                     <i class="fa fa-thumbs-up"></i> Quero
                 </a>
@@ -38,10 +38,10 @@
             <div class="col-3 p-3 col-card-photo">
                 <div class="card mb-4 box-shadow">
                     <img class="card-img-top"
-                         data-src="{{ $photo->source }}"
+                         data-src="{{ route('photo.cache.type', ['id' => $photo->id, 'type' => 'polaroid' ]) }}"
                          alt="Thumbnail"
                          style="width: 100%; display: block;"
-                         src="{{ $photo->source }}"
+                         src="{{ route('photo.cache.type', ['id' => $photo->id, 'type' => 'polaroid' ]) }}"
                          data-holder-rendered="true">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -54,7 +54,8 @@
                                     <i class="{{ $photo->dislike? 'fa fa-thumbs-up' : 'fa fa-thumbs-down' }}"></i>
                                 </button>
                             </div>
-                            <i title="{{ Str::title($photo->socialite->driver) }}" class="fab fa-2x fa-{{ $photo->socialite->driver }}"></i>
+                            <i title="{{ Str::title($photo->socialite->driver) }}"
+                               class="fab fa-2x fa-{{ $photo->socialite->driver }}"></i>
                         </div>
                     </div>
                 </div>

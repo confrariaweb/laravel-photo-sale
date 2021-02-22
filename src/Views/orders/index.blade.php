@@ -1,12 +1,12 @@
 <x-template-layout>
     <div class="row">
         <div class="col-4">
-            <h4>Lista de pedidos</h4>
+            <h4>{{ __('photoSale::messages.orders') }}</h4>
         </div>
-        <div class="col-8 text-right">
-            <div class="btn-group float-right" role="group" aria-label="Basic example">
+        <div class="col-8">
+            <div class="btn-group float-end" role="group" aria-label="">
                 <div class="btn-group" role="group" aria-label="">
-                    <a href="#" class="btn btn-secondary">Voltar</a>
+                    <a href="#" class="btn btn-outline-secondary">{{ __('photoSale::messages.return') }}</a>
                 </div>
             </div>
         </div>
@@ -14,14 +14,14 @@
     <hr>
     <div class="row" id="orders-row">
         <div class="col-12">
-            <table class="table table-striped datatable" style="width:100%">
+            <table class="table table-striped table-hover datatable" style="width:100%">
                 <thead>
                 <tr>
                     <th>Plano</th>
                     <th>Status</th>
                     <th>Preço</th>
                     <th>Recorrencia</th>
-                    <th>Data</th>
+                    <th>Criado em</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -35,16 +35,33 @@
                         <td>{{ $order->recurrent? 'Recorrente' : 'Unico' }}</td>
                         <td>{{ $order->created_at->format('d/m/Y') }}</td>
                         <td>
-                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                <a href="{{ route('orders.show', ['order' => $order->id]) }}" class="btn btn-sm btn-secondary">
-                                    <span class="material-icons">pageview</span>
+                            <div class="btn-group btn-group-sm float-end" role="group" aria-label="Basic example">
+                                <a href="{{ route('orders.show', ['order' => $order->id]) }}"
+                                   class="btn btn-sm btn-primary">
+                                    <span class="material-icons">{{ __('show') }}</span>
                                 </a>
-                                <a href="{{ route('orders.edit', ['order' => $order->id]) }}" class="btn btn-sm btn-success">
-                                    <span class="material-icons">edit</span>
+                                @if(auth()->user()->isAdmin() && !$order->isDone())
+                                <a href="{{ route('orders.edit', ['order' => $order->id]) }}"
+                                   class="btn btn-sm btn-success">
+                                    <span class="material-icons">{{ __('edit') }}</span>
                                 </a>
-                                <a href="#" class="btn btn-sm btn-danger">
-                                    <span class="material-icons">cancel</span>
-                                </a>
+                                @endif
+                                @if(auth()->user()->isAdmin() && !$order->isDone())
+                                    <a href="#" class="btn btn-sm btn-warning">
+                                        <span class="material-icons">{{ __('files') }}</span>
+                                    </a>
+                                @endif
+                                @if(!$order->isDone())
+                                    <button type="button"
+                                            onclick="event.preventDefault(); document.getElementById('formCancelOrder-{{ $order->id }}').submit();"
+                                            class="btn btn-sm btn-danger">
+                                        <span class="material-icons">{{ __('cancel') }}</span>
+                                    </button>
+                                    <form id="formCancelOrder-{{ $order->id }}" method="POST"
+                                          action="{{ route('orders.cancel', ['order' => $order->id]) }}">
+                                        @csrf
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -57,7 +74,7 @@
 
                     <th>Preço</th>
                     <th>Recorrencia</th>
-                    <th>Data</th>
+                    <th>Criado em</th>
                     <th></th>
                 </tr>
                 </tfoot>

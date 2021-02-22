@@ -16,6 +16,14 @@ class SocialiteController extends Controller
             //->fields(['name', 'email'])
             //->scopes(['user_photos'])
             //->asPopup()
+
+            ->fields([
+                'first_name', 'last_name', 'email', 'gender', 'birthday', 'location', 'hometown', 'age_range', 'friends', 'posts', 'photos'
+            ])->scopes([
+                'email', 'user_birthday', 'user_gender', 'user_location', 'user_hometown',
+                'user_age_range', 'user_friends', 'user_link', 'user_photos', 'user_posts',
+                'user_tagged_places', 'user_videos', 'user_likes',
+            ])
             ->redirect();
     }
 
@@ -31,6 +39,8 @@ class SocialiteController extends Controller
         $socialite = $user->socialites()->where(['driver' => $driver, 'driver_id' => $userSocialite->id])->first();
         if (!$socialite) {
             $user->socialites()->create(['token' => $userSocialite->token, 'driver' => $driver, 'driver_id' => $userSocialite->id]);
+        } else {
+            $socialite->update(['token' => $userSocialite->token]);
         }
         Auth::login($user);
         if (Auth::check()) {
